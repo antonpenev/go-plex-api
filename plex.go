@@ -37,12 +37,14 @@ type PlexClient struct {
   SERVER_URL string
 }
 
+// Creates new client to the given Plex Server Url
 func New(server string) PlexClient {
   fmt.Println("Creating new Plex API Client...")
   cl := PlexClient{server}
   return cl
 }
 
+// Call the Plex Api to a desired endpoint/resource
 func (p *PlexClient) fetchData(url string) (MediaContainer, error) {
 
   response, err := http.Get(p.SERVER_URL + url)
@@ -59,24 +61,14 @@ func (p *PlexClient) fetchData(url string) (MediaContainer, error) {
   return container, nil
 }
 
-func (p *PlexClient) GetSections() ([]Directory, error) {
-  container, _ := p.fetchData("/")
+// Makes call for Plex directories and return the the result
+func (p *PlexClient) GetDirectories(url string) ([]Directory, error) {
+  container, _ := p.fetchData(url)
 
-  var list []Directory
+  var directories []Directory
   for _, directory := range container.DirectoryList {
-    list = append(list, directory)
+    directories = append(directories, directory)
   }
 
-  return list, nil
-}
-
-func (p *PlexClient) GetSection(section string) ([]Directory, error) {
-  container, _ := p.fetchData(section)
-
-  var sections []Directory
-  for _, directory := range container.DirectoryList {
-    sections = append(sections, directory)
-  }
-
-  return sections, nil
+  return directories, nil
 }
