@@ -10,6 +10,7 @@ import (
 type MediaContainer struct {
   XMLName                       xml.Name    `xml:"MediaContainer"`
   DirectoryList                 []Directory `xml:"Directory"`
+  VideoList                     []Video     `xml:"Video"`
   Size                          int         `xml:"size,attr"`
   AllowCameraUpload             int         `xml:"allowCameraUpload,attr"`
   AllowSync                     int         `xml:"allowSync,attr"`
@@ -27,10 +28,79 @@ type MediaContainer struct {
 }
 
 type Directory struct {
-  XMLName xml.Name `xml:"Directory"`
-  Count   string   `xml:"count,attr"`
-  Key     string   `xml:"key,attr"`
-  Title   string   `xml:"title,attr"`
+  XMLName      xml.Name   `xml:"Directory"`
+  LocationList []Location `xml:"Location"`
+  Count        int        `xml:"count,attr"`
+  Key          string     `xml:"key,attr"`
+  Title        string     `xml:"title,attr"`
+  Art          string     `xml:"art,attr"`
+  Composite    string     `xml:"composite,attr"`
+  Filters      int        `xml:"filters,attr"`
+  Refreshing   int        `xml:"refreshing,attr"`
+  Thumb        string     `xml:"thumb,attr"`
+  Type         string     `xml:"type,attr"`
+  Agent        string     `xml:"agent,attr"`
+  Scanner      string     `xml:"scanner,attr"`
+  Language     string     `xml:"language,attr"`
+  Uuid         string     `xml:"uuid,attr"`
+  UpdatedAt    string     `xml:"updatedAt,attr"`
+  CreatedAt    string     `xml:"createdAt,attr"`
+  AllowSync    int        `xml:"allowSync,attr"`
+}
+
+type Location struct {
+  XMLName xml.Name `xml:"Location"`
+  Id      int      `xml:"id,attr"`
+  Path    string   `xml:"path,attr"`
+}
+
+type Video struct {
+  XMLName               xml.Name `xml:"Video"`
+  RatingKey             string   `xml:"ratingKey,attr"`
+  Key                   string   `xml:"key,attr"`
+  Studio                string   `xml:"studio,attr"`
+  Type                  string   `xml:"type,attr"`
+  Title                 string   `xml:"title,attr"`
+  TitleSort             string   `xml:"titleSort,attr"`
+  ContentRating         string   `xml:"contentRating,attr"`
+  Summary               string   `xml:"summary,attr"`
+  Rating                string   `xml:"rating,attr"`
+  ViewOffset            string   `xml:"viewOffset,attr"`
+  LastViewedAt          string   `xml:"lastViewedAt,attr"`
+  Year                  string   `xml:"year,attr"`
+  Tagline               string   `xml:"tagline,attr"`
+  Thumb                 string   `xml:"thumb,attr"`
+  Art                   string   `xml:"art,attr"`
+  Duration              string   `xml:"duration,attr"`
+  OriginallyAvailableAt string   `xml:"originallyAvailableAt,attr"`
+  AddedAt               string   `xml:"addedAt,attr"`
+  UpdatedAt             string   `xml:"updatedAt,attr"`
+  ChapterSource         string   `xml:"chapterSource,attr"`
+}
+
+type Genre struct {
+  XMLName xml.Name `xml:"Genre"`
+  Tag     string   `xml:"tag,attr"`
+}
+
+type Writer struct {
+  XMLName xml.Name `xml:"Writer"`
+  Tag     string   `xml:"tag,attr"`
+}
+
+type Country struct {
+  XMLName xml.Name `xml:"Country"`
+  Tag     string   `xml:"tag,attr"`
+}
+
+type Role struct {
+  XMLName xml.Name `xml:"Role"`
+  Tag     string   `xml:"tag,attr"`
+}
+
+type Director struct {
+  XMLName xml.Name `xml:"Director"`
+  Tag     string   `xml:"tag,attr"`
 }
 
 type PlexClient struct {
@@ -71,4 +141,16 @@ func (p *PlexClient) GetDirectories(url string) ([]Directory, error) {
   }
 
   return directories, nil
+}
+
+// Get all video
+func (p *PlexClient) GetVideos(url string) ([]Video, error) {
+  container, _ := p.fetchData(url)
+
+  var videos []Video
+  for _, video := range container.VideoList {
+    videos = append(videos, video)
+  }
+
+  return videos, nil
 }
